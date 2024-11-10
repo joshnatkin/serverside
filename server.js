@@ -3,8 +3,20 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.static("public"));
+const multer = require("multer");
 
-const housePlans = {
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/dogs/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+const Dogs = {
     "animals": [
       {
         "_id": 1,
@@ -113,11 +125,20 @@ app.get("/",(req,res)=>{
     res.sendFile(__dirname + "/index.html");
 });
 
-app.get("/api/house_plans", (req,res)=>{
-    res.json(housePlans);
+app.post("/api/upload", upload.single("dogImage"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
+  }
+  console.log("File uploaded successfully:", req.file);
+  res.send({ message: "File uploaded successfully!", file: req.file });
 });
 
 
-app.listen(3001, () => {
-    console.log("Listening....");
+app.get("/api/house_plans", (req,res)=>{
+    res.json(Dogs);
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}...`);
 });
