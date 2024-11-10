@@ -134,7 +134,7 @@ app.post("/api/upload", upload.single("dogImage"), (req, res) => {
 });
 
 
-app.get("/api/house_plans", (req,res)=>{
+app.get("/api/dogs", (req,res)=>{
     res.json(Dogs);
 });
 

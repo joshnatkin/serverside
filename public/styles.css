@@ -1,3 +1,84 @@
-h1 {
-    color:skyblue;
+
+/* Body Styling */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: beige;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #333;
 }
+
+/* Header Styling */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: black;
+}
+
+/* Flex Container Styling */
+#flex-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Pet Care Section */
+#pet-care {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: black;
+    color: white;
+    width: 80%;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+#pet-care h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+/* Unordered List */
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul li {
+    margin: 10px 0;
+    font-size: 1.1rem;
+}
+
+ul li a {
+    color: #00aaff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+ul li a:hover {
+    color: #0077cc;
+    background-color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #pet-care {
+        width: 90%;
+        padding: 15px;
+    }
+
+    #pet-care h2 {
+        font-size: 1.25rem;
+    }
+
+    ul li {
+        font-size: 1rem;
+    }
+}
+
+
+
