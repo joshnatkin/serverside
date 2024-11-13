@@ -46,7 +46,7 @@ const Dogs = {
         "name": "Zoey",
         "breed": "Australian Shepherd",
         "age": "6 weeks old",
-        "img_name": "Ausie-Zoey.jpg",
+        "img_name": "Ausie-Zoey.png",
         "features": ["Energetic", "Loyal", "Protective"],
         "vaccinated": true,
         "gender": "Female"
@@ -56,7 +56,7 @@ const Dogs = {
         "name": "Moxie",
         "breed": "Wheaten Terrier",
         "age": "6 weeks old",
-        "img_name": "Wheaten-Boxer.jpeg",
+        "img_name": "Wheaten-Boxer.png",
         "features": ["Friendly", "Curious", "Independent"],
         "vaccinated": true,
         "gender": "Female"
@@ -76,7 +76,7 @@ const Dogs = {
         "name": "Walter",
         "breed": "Dalmatian",
         "age": "8 weeks old",
-        "img_name": "dalmation-walter.jpeg",
+        "img_name": "dalmation-walter.png",
         "features": ["Active", "Outgoing", "Friendly"],
         "vaccinated": false,
         "gender": "Male"
@@ -158,7 +158,7 @@ app.post("/api/dogs", upload.single("dogImage"), (req, res) => {
     name: req.body.name,
     breed: req.body.breed,
     age: req.body.age,
-    img_name: req.file ? req.file.filename : "default.jpg",
+    img_name: req.file ? req.file.filename : "default.png",
     features: req.body.features.split(","), // Convert comma-separated list to array
     vaccinated: req.body.vaccinated === "true",
     gender: req.body.gender,
