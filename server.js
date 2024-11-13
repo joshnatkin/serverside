@@ -163,7 +163,7 @@ app.post("/api/dogs", upload.single("dogImage"), (req, res) => {
   };
 
   Dogs.animals.push(newDog);
-  res.status(200).json(newDog);
+  res.status(200).json(Dogs.animals);  // Sends full list of dogs after adding a new one
 });
 
 // File upload route for testing image upload separately (optional)
