@@ -7,6 +7,7 @@ app.use(express.static("public"));
 const multer = require("multer");
 const Joi = require("joi");
 
+// Setup storage and multer for handling file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./public/dogs/");
@@ -18,8 +19,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Simulated database of dogs
 const Dogs = {
-  "animals": [
+  animals: [
     {
       "_id": 1,
       "name": "Baxter",
@@ -123,17 +125,7 @@ const Dogs = {
   ]
 };
 
-// GET request to serve the HTML file (e.g., for testing purposes)
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-});
-
-// GET request to fetch all dogs
-app.get("/api/dogs", (req, res) => {
-  res.json(Dogs);
-});
-
-// Validation schema using Joi
+// Validation schema for dog data using Joi
 function validateDog(dog) {
   const schema = Joi.object({
     name: Joi.string().min(3).required(),
@@ -146,33 +138,29 @@ function validateDog(dog) {
   return schema.validate(dog);
 }
 
-// POST request to add a new dog entry
+// POST route to add a new dog
 app.post("/api/dogs", upload.single("dogImage"), (req, res) => {
+  // Validate dog data (excluding file)
   const { error } = validateDog(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
+  // Construct new dog object, including the image if uploaded
   const newDog = {
-    _id: Dogs.animals.length + 1, // Simple ID assignment
+    _id: Dogs.animals.length + 1, // Auto-generate ID based on array length
     name: req.body.name,
     breed: req.body.breed,
     age: req.body.age,
-    img_name: req.file ? req.file.filename : "default.png",
-    features: req.body.features.split(","), // Convert comma-separated list to array
-    vaccinated: req.body.vaccinated === "true",
+    img_name: req.file ? req.file.filename : "default.png", // Handle image file upload
+    features: req.body.features.split(",").map(f => f.trim()), // Split and trim the feature list
+    vaccinated: req.body.vaccinated === "true", // Ensure it's a boolean
     gender: req.body.gender,
   };
 
+  // Add the new dog to the "database" (array)
   Dogs.animals.push(newDog);
-  res.status(200).json(Dogs.animals);  // Sends full list of dogs after adding a new one
-});
 
-// File upload route for testing image upload separately (optional)
-app.post("/api/upload", upload.single("dogImage"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No file uploaded.");
-  }
-  console.log("File uploaded successfully:", req.file);
-  res.send({ message: "File uploaded successfully!", file: req.file });
+  // Send back the full list of dogs
+  res.status(200).json(Dogs.animals);
 });
 
 // Start the server
