@@ -124,7 +124,6 @@ const Dogs = {
     ]
   };
 
-
 // GET request to serve the HTML file (e.g., for testing purposes)
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
@@ -180,5 +179,5 @@ app.post("/api/upload", upload.single("dogImage"), (req, res) => {
 // Start the server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}...`);
+  console.log(`Listening on port ${PORT}`);
 });
