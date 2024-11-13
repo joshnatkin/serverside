@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 app.use(cors());
-app.use(express.json()); // To parse JSON body
 app.use(express.static("public"));
 const multer = require("multer");
 const Joi = require("joi");
@@ -166,14 +165,6 @@ app.post("/api/dogs", upload.single("dogImage"), (req, res) => {
   res.status(200).json(newDog);
 });
 
-// File upload route for testing image upload separately (optional)
-app.post("/api/upload", upload.single("dogImage"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No file uploaded.");
-  }
-  console.log("File uploaded successfully:", req.file);
-  res.send({ message: "File uploaded successfully!", file: req.file });
-});
 
 // Start the server
 const PORT = process.env.PORT || 3001;
