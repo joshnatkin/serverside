@@ -2,8 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 app.use(cors());
+app.use(express.json()); // To parse JSON body
 app.use(express.static("public"));
 const multer = require("multer");
+const Joi = require("joi");
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -121,10 +124,51 @@ const Dogs = {
     ]
   };
 
-app.get("/",(req,res)=>{
-    res.sendFile(__dirname + "/index.html");
+
+// GET request to serve the HTML file (e.g., for testing purposes)
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
 });
 
+// GET request to fetch all dogs
+app.get("/api/dogs", (req, res) => {
+  res.json(Dogs);
+});
+
+// Validation schema using Joi
+function validateDog(dog) {
+  const schema = Joi.object({
+    name: Joi.string().min(3).required(),
+    breed: Joi.string().min(3).required(),
+    age: Joi.string().required(),
+    features: Joi.array().items(Joi.string()).min(3).required(),
+    vaccinated: Joi.boolean().required(),
+    gender: Joi.string().valid("Male", "Female").required(),
+  });
+  return schema.validate(dog);
+}
+
+// POST request to add a new dog entry
+app.post("/api/dogs", upload.single("dogImage"), (req, res) => {
+  const { error } = validateDog(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const newDog = {
+    _id: Dogs.animals.length + 1, // Simple ID assignment
+    name: req.body.name,
+    breed: req.body.breed,
+    age: req.body.age,
+    img_name: req.file ? req.file.filename : "default.jpg",
+    features: req.body.features.split(","), // Convert comma-separated list to array
+    vaccinated: req.body.vaccinated === "true",
+    gender: req.body.gender,
+  };
+
+  Dogs.animals.push(newDog);
+  res.status(201).json(newDog);
+});
+
+// File upload route for testing image upload separately (optional)
 app.post("/api/upload", upload.single("dogImage"), (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
@@ -133,11 +177,7 @@ app.post("/api/upload", upload.single("dogImage"), (req, res) => {
   res.send({ message: "File uploaded successfully!", file: req.file });
 });
 
-
-app.get("/api/dogs", (req,res)=>{
-    res.json(Dogs);
-});
-
+// Start the server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}...`);
