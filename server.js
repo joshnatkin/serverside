@@ -127,55 +127,60 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-// GET request to fetch all dogs
 app.get("/api/dogs", (req, res) => {
   res.json(Dogs);
 });
 
-// Validation schema using Joi
-function validateDog(dog) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).required(),
-    breed: Joi.string().min(3).required(),
-    age: Joi.string().required(),
-    features: Joi.array().items(Joi.string()).min(3).required(),
-    vaccinated: Joi.boolean().required(),
-    gender: Joi.string().valid("Male", "Female").required(),
-  });
-  return schema.validate(dog);
-}
+// API to post a new dog, including an image upload
+app.post("/api/dogs", upload.single("img"), (req, res) => {
+  console.log("In a POST request");
 
-// POST request to add a new dog entry
-app.post("/api/dogs", upload.single("dogImage"), (req, res) => {
-  const { error } = validateDog(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  // Validate the dog data
+  const result = validateDog(req.body);
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    console.log("I have an error");
+    return;
+  }
 
-  const newDog = {
-    _id: Dogs.animals.length + 1, // Simple ID assignment
+  // Create a new dog object
+  const dog = {
+    _id: Dogs.animals.length + 1, // Auto-increment the ID
     name: req.body.name,
     breed: req.body.breed,
     age: req.body.age,
-    img_name: req.file ? req.file.filename : "default.png",
-    features: req.body.features.split(","), // Convert comma-separated list to array
+    features: req.body.features.split(","),
     vaccinated: req.body.vaccinated === "true",
     gender: req.body.gender,
   };
 
-  Dogs.animals.push(newDog);
-  res.status(200).json(Dogs.animals);  // Sends full list of dogs after adding a new one
-});
-
-// File upload route for testing image upload separately (optional)
-app.post("/api/upload", upload.single("dogImage"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No file uploaded.");
+  // If an image was uploaded, save the image filename to the dog object
+  if (req.file) {
+    dog.img_name = req.file.filename;
   }
-  console.log("File uploaded successfully:", req.file);
-  res.send({ message: "File uploaded successfully!", file: req.file });
+
+  // Add the new dog to the array
+  Dogs.animals.push(dog);
+
+  console.log(dog);
+  res.status(200).send(dog);
 });
 
-// Start the server
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}...`);
+// Validation schema using Joi
+const validateDog = (dog) => {
+  const schema = Joi.object({
+    name: Joi.string().min(3).required(),
+    breed: Joi.string().min(3).required(),
+    age: Joi.string().required(),
+    features: Joi.string().required(),
+    vaccinated: Joi.boolean().required(),
+    gender: Joi.string().valid("Male", "Female").required(),
+  });
+
+  return schema.validate(dog);
+};
+
+// Start the Express server
+app.listen(3001, () => {
+  console.log("Listening on port 3001...");
 });
