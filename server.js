@@ -7,7 +7,6 @@ app.use(express.static("public"));
 const multer = require("multer");
 const Joi = require("joi");
 
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./public/dogs/");
@@ -20,109 +19,109 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const Dogs = {
-    "animals": [
-      {
-        "_id": 1,
-        "name": "Baxter",
-        "breed": "Cocker Spaniel",
-        "age": "3 months old",
-        "img_name": "Cocker-Baxston.png",
-        "features": ["Friendly", "Energetic", "Loyal"],
-        "vaccinated": true,
-        "gender": "Male"
-      },
-      {
-        "_id": 2,
-        "name": "Mary",
-        "breed": "Golden Doodle",
-        "age": "1 month old",
-        "img_name": "puppy-Mary.png",
-        "features": ["Playful", "Intelligent", "Affectionate"],
-        "vaccinated": false,
-        "gender": "Female"
-      },
-      {
-        "_id": 3,
-        "name": "Zoey",
-        "breed": "Australian Shepherd",
-        "age": "6 weeks old",
-        "img_name": "Ausie-Zoey.png",
-        "features": ["Energetic", "Loyal", "Protective"],
-        "vaccinated": true,
-        "gender": "Female"
-      },
-      {
-        "_id": 4,
-        "name": "Moxie",
-        "breed": "Wheaten Terrier",
-        "age": "6 weeks old",
-        "img_name": "Wheaten-Boxer.png",
-        "features": ["Friendly", "Curious", "Independent"],
-        "vaccinated": true,
-        "gender": "Female"
-      },
-      {
-        "_id": 5,
-        "name": "Cassie",
-        "breed": "Boxer Spaniel",
-        "age": "11 weeks old",
-        "img_name": "boxer-cassie.png",
-        "features": ["Energetic", "Loyal", "Playful"],
-        "vaccinated": false,
-        "gender": "Female"
-      },
-      {
-        "_id": 6,
-        "name": "Walter",
-        "breed": "Dalmatian",
-        "age": "8 weeks old",
-        "img_name": "dalmation-walter.png",
-        "features": ["Active", "Outgoing", "Friendly"],
-        "vaccinated": false,
-        "gender": "Male"
-      },
-      {
-        "_id": 7,
-        "name": "Rufors",
-        "breed": "Great Dane",
-        "age": "15 weeks old",
-        "img_name": "Dane-Ruford.png",
-        "features": ["Gentle", "Loyal", "Protective"],
-        "vaccinated": true,
-        "gender": "Male"
-      },
-      {
-        "_id": 8,
-        "name": "Snoopy",
-        "breed": "German Shepherd",
-        "age": "5 weeks old",
-        "img_name": "german-snoopy.png",
-        "features": ["Intelligent", "Loyal", "Protective"],
-        "vaccinated": true,
-        "gender": "Male"
-      },
-      {
-        "_id": 9,
-        "name": "Damian",
-        "breed": "Husky",
-        "age": "12 weeks old",
-        "img_name": "husky-damian.png",
-        "features": ["Energetic", "Friendly", "Independent"],
-        "vaccinated": true,
-        "gender": "Male"
-      },
-      {
-        "_id": 10,
-        "name": "Jodi",
-        "breed": "Labradoodle",
-        "age": "14 weeks old",
-        "img_name": "lab-jodi.png",
-        "features": ["Playful", "Affectionate", "Curious"],
-        "vaccinated": true,
-        "gender": "Female"
-      }
-    ]
-  };
+  "animals": [
+    {
+      "_id": 1,
+      "name": "Baxter",
+      "breed": "Cocker Spaniel",
+      "age": "3 months old",
+      "img_name": "Cocker-Baxston.png",
+      "features": ["Friendly", "Energetic", "Loyal"],
+      "vaccinated": true,
+      "gender": "Male"
+    },
+    {
+      "_id": 2,
+      "name": "Mary",
+      "breed": "Golden Doodle",
+      "age": "1 month old",
+      "img_name": "puppy-Mary.png",
+      "features": ["Playful", "Intelligent", "Affectionate"],
+      "vaccinated": false,
+      "gender": "Female"
+    },
+    {
+      "_id": 3,
+      "name": "Zoey",
+      "breed": "Australian Shepherd",
+      "age": "6 weeks old",
+      "img_name": "Ausie-Zoey.png",
+      "features": ["Energetic", "Loyal", "Protective"],
+      "vaccinated": true,
+      "gender": "Female"
+    },
+    {
+      "_id": 4,
+      "name": "Moxie",
+      "breed": "Wheaten Terrier",
+      "age": "6 weeks old",
+      "img_name": "Wheaten-Boxer.png",
+      "features": ["Friendly", "Curious", "Independent"],
+      "vaccinated": true,
+      "gender": "Female"
+    },
+    {
+      "_id": 5,
+      "name": "Cassie",
+      "breed": "Boxer Spaniel",
+      "age": "11 weeks old",
+      "img_name": "boxer-cassie.png",
+      "features": ["Energetic", "Loyal", "Playful"],
+      "vaccinated": false,
+      "gender": "Female"
+    },
+    {
+      "_id": 6,
+      "name": "Walter",
+      "breed": "Dalmatian",
+      "age": "8 weeks old",
+      "img_name": "dalmation-walter.png",
+      "features": ["Active", "Outgoing", "Friendly"],
+      "vaccinated": false,
+      "gender": "Male"
+    },
+    {
+      "_id": 7,
+      "name": "Rufors",
+      "breed": "Great Dane",
+      "age": "15 weeks old",
+      "img_name": "Dane-Ruford.png",
+      "features": ["Gentle", "Loyal", "Protective"],
+      "vaccinated": true,
+      "gender": "Male"
+    },
+    {
+      "_id": 8,
+      "name": "Snoopy",
+      "breed": "German Shepherd",
+      "age": "5 weeks old",
+      "img_name": "german-snoopy.png",
+      "features": ["Intelligent", "Loyal", "Protective"],
+      "vaccinated": true,
+      "gender": "Male"
+    },
+    {
+      "_id": 9,
+      "name": "Damian",
+      "breed": "Husky",
+      "age": "12 weeks old",
+      "img_name": "husky-damian.png",
+      "features": ["Energetic", "Friendly", "Independent"],
+      "vaccinated": true,
+      "gender": "Male"
+    },
+    {
+      "_id": 10,
+      "name": "Jodi",
+      "breed": "Labradoodle",
+      "age": "14 weeks old",
+      "img_name": "lab-jodi.png",
+      "features": ["Playful", "Affectionate", "Curious"],
+      "vaccinated": true,
+      "gender": "Female"
+    }
+  ]
+};
 
 // GET request to serve the HTML file (e.g., for testing purposes)
 app.get("/", (req, res) => {
@@ -179,5 +178,5 @@ app.post("/api/upload", upload.single("dogImage"), (req, res) => {
 // Start the server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  console.log(`Listening on port ${PORT}...`);
 });
