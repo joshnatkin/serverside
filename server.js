@@ -181,7 +181,7 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
 
 app.put("/api/dogs/:_id", upload.single("img"), (req, res) => {
 
-  const dog = Dogs.find((d) => d._id === parseInt(req.params.id));
+  const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
   
   if (!dog) {
     console.log("Dog with ID", req.params.id, "not found");
