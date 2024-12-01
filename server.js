@@ -131,15 +131,6 @@ app.get("/api/dogs", (req, res) => {
   res.json(Dogs);
 });
 
-app.get("/api/dogs/:_id", (req, res) => {
-  const dog = Dogs.animals.find(d => d._id === parseInt(req.params._id));
-  if (!dog) {
-    return res.status(404).send("Dog not found.");
-  }
-  res.json(dog);
-});
-
-
 // API to post a new dog, including an image upload
 app.post("/api/dogs", upload.single("img"), (req, res) => {
   console.log("In a POST request");
@@ -180,9 +171,10 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
 });
 
 app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
-
+  // Find the dog by ID
   const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
 
+  // If the dog is not found, return a 404 error
   if (!dog) {
     res.status(404).send("The dog with the provided ID was not found.");
     return;
@@ -230,5 +222,4 @@ const validateDog = (dog) => {
 // Start the Express server
 app.listen(3001, () => {
   console.log("Listening on port 3001...");
-  
 });
