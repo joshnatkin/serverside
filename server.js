@@ -143,6 +143,10 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
     return;
   }
 
+  //app.delete("api/dogs/id")
+
+  
+
   // Create a new dog object
   const dog = {
     _id: Dogs.animals.length + 1, // Auto-increment the ID
@@ -165,6 +169,41 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
   console.log(dog);
   res.status(200).send(dog);
 });
+
+app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
+  // Find the dog by ID
+  const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
+
+  // If the dog is not found, return a 404 error
+  if (!dog) {
+    res.status(404).send("The dog with the provided ID was not found.");
+    return;
+  }
+
+  // Validate the incoming data
+  const result = validateDog(req.body);
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
+  // Update the dog's properties
+  dog.name = req.body.name;
+  dog.breed = req.body.breed;
+  dog.age = req.body.age;
+  dog.features = req.body.features.split(",");
+  dog.vaccinated = req.body.vaccinated === "true";
+  dog.gender = req.body.gender;
+
+  // If an image was uploaded, update the image name
+  if (req.file) {
+    dog.img_name = req.file.filename;
+  }
+
+  // Send the updated dog object as the response
+  res.status(200).send(dog);
+});
+
 
 // Validation schema using Joi
 const validateDog = (dog) => {
