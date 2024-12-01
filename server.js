@@ -131,6 +131,15 @@ app.get("/api/dogs", (req, res) => {
   res.json(Dogs);
 });
 
+app.get("/api/dogs/:_id", (req, res) => {
+  const dog = Dogs.animals.find(d => d._id === parseInt(req.params._id));
+  if (!dog) {
+    return res.status(404).send("Dog not found.");
+  }
+  res.json(dog);
+});
+
+
 // API to post a new dog, including an image upload
 app.post("/api/dogs", upload.single("img"), (req, res) => {
   console.log("In a POST request");
@@ -170,11 +179,9 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
   res.status(200).send(dog);
 });
 
-app.put("/api/dogs/:_id", upload.single("img"), (req, res) => {
-  console.log("Requested ID:", req.params.id);
-  console.log("Available dogs:", Dogs.animals);
+app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
 
-  const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
+  const dog = Dogs.find((d) => d._id === parseInt(req.params.id));
   
   if (!dog) {
     console.log("Dog with ID", req.params.id, "not found");
