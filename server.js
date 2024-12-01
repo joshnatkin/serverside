@@ -17,7 +17,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const Dogs = [
+const Dogs = {
+  "animals": [
     {
       "_id": 1,
       "name": "Baxter",
@@ -118,7 +119,8 @@ const Dogs = [
       "vaccinated": true,
       "gender": "Female"
     }
-  ];
+  ]
+};
 
 // GET request to serve the HTML file (e.g., for testing purposes)
 app.get("/", (req, res) => {
