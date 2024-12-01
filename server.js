@@ -170,7 +170,7 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
   res.status(200).send(dog);
 });
 
-app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
+app.put("/api/dogs/:_id", upload.single("img"), (req, res) => {
   console.log("Requested ID:", req.params.id);
   console.log("Available dogs:", Dogs.animals);
 
