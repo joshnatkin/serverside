@@ -171,11 +171,13 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
 });
 
 app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
-  // Find the dog by ID
-  const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
+  console.log("Requested ID:", req.params.id);
+  console.log("Available dogs:", Dogs.animals);
 
-  // If the dog is not found, return a 404 error
+  const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
+  
   if (!dog) {
+    console.log("Dog with ID", req.params.id, "not found");
     res.status(404).send("The dog with the provided ID was not found.");
     return;
   }
@@ -222,4 +224,5 @@ const validateDog = (dog) => {
 // Start the Express server
 app.listen(3001, () => {
   console.log("Listening on port 3001...");
+  
 });
