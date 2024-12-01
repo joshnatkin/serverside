@@ -171,10 +171,13 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
 });
 
 app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
+  console.log("Requested ID:", req.params.id);
+  console.log("Available dogs:", Dogs.animals);
 
   const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
   
   if (!dog) {
+    console.log("Dog with ID", req.params.id, "not found");
     res.status(404).send("The dog with the provided ID was not found.");
     return;
   }
