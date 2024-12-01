@@ -170,6 +170,22 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
   res.status(200).send(dog);
 });
 
+// DELETE route to delete a dog by ID
+app.delete("/api/dogs/:id", (req, res) => {
+  const dogIndex = Dogs.animals.findIndex((dog) => dog._id === parseInt(req.params.id));
+
+  if (dogIndex === -1) {
+    res.status(404).send("The dog with the provided ID was not found.");
+    return;
+  }
+
+  // Remove the dog from the array
+  const deletedDog = Dogs.animals.splice(dogIndex, 1);
+
+  res.status(200).send(`Dog ${deletedDog[0].name} successfully deleted.`);
+});
+
+
 app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
   // Find the dog by ID
   const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
