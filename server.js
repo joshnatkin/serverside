@@ -179,7 +179,7 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
   res.status(200).send(dog);
 });
 
-app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
+app.put("/api/dogs/:_id", upload.single("img"), (req, res) => {
 
   const dog = Dogs.find((d) => d._id === parseInt(req.params.id));
   
