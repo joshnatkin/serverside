@@ -17,8 +17,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const Dogs = {
-  "animals": [
+const Dogs = [
     {
       "_id": 1,
       "name": "Baxter",
@@ -119,8 +118,7 @@ const Dogs = {
       "vaccinated": true,
       "gender": "Female"
     }
-  ]
-};
+  ];
 
 // GET request to serve the HTML file (e.g., for testing purposes)
 app.get("/", (req, res) => {
@@ -181,7 +179,7 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
 
 app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
 
-  const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
+  const dog = Dogs.find((d) => d._id === parseInt(req.params.id));
   
   if (!dog) {
     console.log("Dog with ID", req.params.id, "not found");
