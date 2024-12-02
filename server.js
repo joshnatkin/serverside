@@ -133,7 +133,7 @@ app.get("/api/dogs", (req, res) => {
 
 // API to post a new dog, including an image upload
 app.post("/api/dogs", upload.single("img"), (req, res) => {
-  console.log("In a POST request");
+  console.log("In A POST request");
 
   // Validate the dog data
   const result = validateDog(req.body);
