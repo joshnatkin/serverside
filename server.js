@@ -35,7 +35,7 @@ const dogSchema = new mongoose.Schema({
   breed: String,
   age: String,
   img_name: String,
-  features: [String],
+  features: Array,
   vaccinated: Boolean,
   gender: String,
 });
