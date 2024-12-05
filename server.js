@@ -1,11 +1,15 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
-app.use(cors());
-app.use(express.static("public"));
 const multer = require("multer");
+const mongoose = require("mongoose");
 const Joi = require("joi");
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
+
+// Multer storage configuration for image uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./public/dogs/");
@@ -14,142 +18,80 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-
 const upload = multer({ storage: storage });
 
-const Dogs = {
-  "animals": [
-    {
-      "_id": 1,
-      "name": "Baxter",
-      "breed": "Cocker Spaniel",
-      "age": "3 months old",
-      "img_name": "Cocker-Baxston.png",
-      "features": ["Friendly", "Energetic", "Loyal"],
-      "vaccinated": true,
-      "gender": "Male"
-    },
-    {
-      "_id": 2,
-      "name": "Mary",
-      "breed": "Golden Doodle",
-      "age": "1 month old",
-      "img_name": "puppy-Mary.png",
-      "features": ["Playful", "Intelligent", "Affectionate"],
-      "vaccinated": false,
-      "gender": "Female"
-    },
-    {
-      "_id": 3,
-      "name": "Zoey",
-      "breed": "Australian Shepherd",
-      "age": "6 weeks old",
-      "img_name": "Ausie-Zoey.png",
-      "features": ["Energetic", "Loyal", "Protective"],
-      "vaccinated": true,
-      "gender": "Female"
-    },
-    {
-      "_id": 4,
-      "name": "Moxie",
-      "breed": "Wheaten Terrier",
-      "age": "6 weeks old",
-      "img_name": "Wheaten-Boxer.png",
-      "features": ["Friendly", "Curious", "Independent"],
-      "vaccinated": true,
-      "gender": "Female"
-    },
-    {
-      "_id": 5,
-      "name": "Cassie",
-      "breed": "Boxer Spaniel",
-      "age": "11 weeks old",
-      "img_name": "boxer-cassie.png",
-      "features": ["Energetic", "Loyal", "Playful"],
-      "vaccinated": false,
-      "gender": "Female"
-    },
-    {
-      "_id": 6,
-      "name": "Walter",
-      "breed": "Dalmatian",
-      "age": "8 weeks old",
-      "img_name": "dalmation-walter.png",
-      "features": ["Active", "Outgoing", "Friendly"],
-      "vaccinated": false,
-      "gender": "Male"
-    },
-    {
-      "_id": 7,
-      "name": "Rufors",
-      "breed": "Great Dane",
-      "age": "15 weeks old",
-      "img_name": "Dane-Ruford.png",
-      "features": ["Gentle", "Loyal", "Protective"],
-      "vaccinated": true,
-      "gender": "Male"
-    },
-    {
-      "_id": 8,
-      "name": "Snoopy",
-      "breed": "German Shepherd",
-      "age": "5 weeks old",
-      "img_name": "german-snoopy.png",
-      "features": ["Intelligent", "Loyal", "Protective"],
-      "vaccinated": true,
-      "gender": "Male"
-    },
-    {
-      "_id": 9,
-      "name": "Damian",
-      "breed": "Husky",
-      "age": "12 weeks old",
-      "img_name": "husky-damian.png",
-      "features": ["Energetic", "Friendly", "Independent"],
-      "vaccinated": true,
-      "gender": "Male"
-    },
-    {
-      "_id": 10,
-      "name": "Jodi",
-      "breed": "Labradoodle",
-      "age": "14 weeks old",
-      "img_name": "lab-jodi.png",
-      "features": ["Playful", "Affectionate", "Curious"],
-      "vaccinated": true,
-      "gender": "Female"
-    }
-  ]
-};
+// Connect to MongoDB
+mongoose
+  .connect("mongodb+srv://QDV4pCJ8zPJsLXxl:QDV4pCJ8zPJsLXxl@hellodb.dexav.mongodb.net/", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.log("Couldn't connect to MongoDB", error));
 
-// GET request to serve the HTML file (e.g., for testing purposes)
+// Define Dog schema and model
+const dogSchema = new mongoose.Schema({
+  name: String,
+  breed: String,
+  age: String,
+  img_name: String,
+  features: [String],
+  vaccinated: Boolean,
+  gender: String,
+});
+
+const Dog = mongoose.model("Dog", dogSchema);
+
+// GET request to serve the HTML file
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-app.get("/api/dogs", (req, res) => {
-  res.json(Dogs);
+// GET all dogs
+app.get("/api/dogs", async (req, res) => {
+  try {
+    const dogs = await Dog.find();
+    res.status(200).send(dogs);
+  } catch (error) {
+    res.status(500).send("An error occurred while fetching dogs.");
+  }
 });
 
-// API to post a new dog, including an image upload
-app.post("/api/dogs", upload.single("img"), (req, res) => {
-  console.log("In A POST request");
-
-  // Validate the dog data
+// POST a new dog, including an image upload
+app.post("/api/dogs", upload.single("img"), async (req, res) => {
   const result = validateDog(req.body);
   if (result.error) {
     res.status(400).send(result.error.details[0].message);
-    console.log("I have an error");
     return;
   }
 
-  //app.delete("api/dogs/id")
+  const newDog = new Dog({
+    name: req.body.name,
+    breed: req.body.breed,
+    age: req.body.age,
+    img_name: req.file ? req.file.filename : null,
+    features: req.body.features.split(","),
+    vaccinated: req.body.vaccinated === "true",
+    gender: req.body.gender,
+  });
 
-  
+  try {
+    const savedDog = await newDog.save();
+    res.status(201).send(savedDog);
+  } catch (error) {
+    res.status(500).send("An error occurred while saving the dog.");
+  }
+});
 
-  // Create a new dog object
-  const dog = {
-    _id: Dogs.animals.length + 1, // Auto-increment the ID
+// PUT (update) a dog by ID
+app.put("/api/dogs/:id", upload.single("img"), async (req, res) => {
+  const result = validateDog(req.body);
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
+  const fieldsToUpdate = {
     name: req.body.name,
     breed: req.body.breed,
     age: req.body.age,
@@ -158,68 +100,37 @@ app.post("/api/dogs", upload.single("img"), (req, res) => {
     gender: req.body.gender,
   };
 
-  // If an image was uploaded, save the image filename to the dog object
   if (req.file) {
-    dog.img_name = req.file.filename;
+    fieldsToUpdate.img_name = req.file.filename;
   }
 
-  // Add the new dog to the array
-  Dogs.animals.push(dog);
-
-  console.log(dog);
-  res.status(200).send(dog);
+  try {
+    const updatedDog = await Dog.findByIdAndUpdate(req.params.id, fieldsToUpdate, {
+      new: true,
+    });
+    if (!updatedDog) {
+      res.status(404).send("The dog with the provided ID was not found.");
+      return;
+    }
+    res.status(200).send(updatedDog);
+  } catch (error) {
+    res.status(500).send("An error occurred while updating the dog.");
+  }
 });
 
-// DELETE route to delete a dog by ID
-app.delete("/api/dogs/:id", (req, res) => {
-  const dogIndex = Dogs.animals.findIndex((dog) => dog._id === parseInt(req.params.id));
-
-  if (dogIndex === -1) {
-    res.status(404).send("The dog with the provided ID was not found.");
-    return;
+// DELETE a dog by ID
+app.delete("/api/dogs/:id", async (req, res) => {
+  try {
+    const deletedDog = await Dog.findByIdAndDelete(req.params.id);
+    if (!deletedDog) {
+      res.status(404).send("The dog with the provided ID was not found.");
+      return;
+    }
+    res.status(200).send(deletedDog);
+  } catch (error) {
+    res.status(500).send("An error occurred while deleting the dog.");
   }
-
-  // Remove the dog from the array
-  const deletedDog = Dogs.animals.splice(dogIndex, 1);
-
-  res.status(200).send(`Dog ${deletedDog[0].name} successfully deleted.`);
 });
-
-
-app.put("/api/dogs/:id", upload.single("img"), (req, res) => {
-  // Find the dog by ID
-  const dog = Dogs.animals.find((d) => d._id === parseInt(req.params.id));
-
-  // If the dog is not found, return a 404 error
-  if (!dog) {
-    res.status(404).send("The dog with the provided ID was not found.");
-    return;
-  }
-
-  // Validate the incoming data
-  const result = validateDog(req.body);
-  if (result.error) {
-    res.status(400).send(result.error.details[0].message);
-    return;
-  }
-
-  // Update the dog's properties
-  dog.name = req.body.name;
-  dog.breed = req.body.breed;
-  dog.age = req.body.age;
-  dog.features = req.body.features.split(",");
-  dog.vaccinated = req.body.vaccinated === "true";
-  dog.gender = req.body.gender;
-
-  // If an image was uploaded, update the image name
-  if (req.file) {
-    dog.img_name = req.file.filename;
-  }
-
-  // Send the updated dog object as the response
-  res.status(200).send(dog);
-});
-
 
 // Validation schema using Joi
 const validateDog = (dog) => {
