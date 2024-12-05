@@ -35,7 +35,7 @@ const dogSchema = new mongoose.Schema({
   breed: String,
   age: String,
   img_name: String,
-  features: Array,
+  features: [String],  // Features is now an array of strings
   vaccinated: Boolean,
   gender: String,
 });
@@ -70,8 +70,8 @@ app.post("/api/dogs", upload.single("img"), async (req, res) => {
     breed: req.body.breed,
     age: req.body.age,
     img_name: req.file ? req.file.filename : null,
-    features: req.body.features.split(","),
-    vaccinated: req.body.vaccinated === "true",
+    features: req.body.features ? req.body.features.split(",") : [], // Split the string into an array if features are passed as a comma-separated string
+    vaccinated: req.body.vaccinated === "true", // Convert string to boolean
     gender: req.body.gender,
   });
 
@@ -95,8 +95,8 @@ app.put("/api/dogs/:id", upload.single("img"), async (req, res) => {
     name: req.body.name,
     breed: req.body.breed,
     age: req.body.age,
-    features: req.body.features.split(","),
-    vaccinated: req.body.vaccinated === "true",
+    features: req.body.features ? req.body.features.split(",") : [], // Update features by splitting if passed as string
+    vaccinated: req.body.vaccinated === "true", // Convert string to boolean
     gender: req.body.gender,
   };
 
@@ -105,9 +105,7 @@ app.put("/api/dogs/:id", upload.single("img"), async (req, res) => {
   }
 
   try {
-    const updatedDog = await Dog.findByIdAndUpdate(req.params.id, fieldsToUpdate, {
-      new: true,
-    });
+    const updatedDog = await Dog.findByIdAndUpdate(req.params.id, fieldsToUpdate, { new: true });
     if (!updatedDog) {
       res.status(404).send("The dog with the provided ID was not found.");
       return;
@@ -138,7 +136,7 @@ const validateDog = (dog) => {
     name: Joi.string().min(3).required(),
     breed: Joi.string().min(3).required(),
     age: Joi.string().required(),
-    features: Joi.string().required(),
+    features: Joi.string().optional(),  // Features can be a string, will be split into an array
     vaccinated: Joi.boolean().required(),
     gender: Joi.string().valid("Male", "Female").required(),
   });
